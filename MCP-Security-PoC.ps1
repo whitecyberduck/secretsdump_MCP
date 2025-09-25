@@ -111,12 +111,15 @@ class MCPSecurityTester {
                 if ($value -is [string] -and $value.StartsWith("__encrypted__:")) {
                     [void]$blobs.Add($value)
                     
+                    $previewLength = [Math]::Min(30, $value.Length)
+                    $blobPreview = $value.Substring(0, $previewLength) + "..."
+                    
                     $finding = @{
                         type = "encrypted_blob"
                         file = $fileName
                         key = $key
                         path = $currentPath
-                        blob_preview = $value.Substring(0, [Math]::Min(30, $value.Length)) + "..."
+                        blob_preview = $blobPreview
                     }
                     [void]$this.Findings.Add($finding)
                 }
