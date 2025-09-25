@@ -88,11 +88,20 @@ class MCPSecurityTester {
     
     [void] SearchForBlobs([PSObject]$obj, [System.Collections.ArrayList]$blobs, [string]$fileName, [string]$path) {
         if ($obj -is [PSCustomObject] -or $obj -is [hashtable]) {
-            $properties = if ($obj -is [PSCustomObject]) { $obj.PSObject.Properties } else { $obj.GetEnumerator() }
+            if ($obj -is [PSCustomObject]) {
+                $properties = $obj.PSObject.Properties
+            } else {
+                $properties = $obj.GetEnumerator()
+            }
             
             foreach ($property in $properties) {
-                $key = if ($obj -is [PSCustomObject]) { $property.Name } else { $property.Key }
-                $value = if ($obj -is [PSCustomObject]) { $property.Value } else { $property.Value }
+                if ($obj -is [PSCustomObject]) {
+                    $key = $property.Name
+                    $value = $property.Value
+                } else {
+                    $key = $property.Key
+                    $value = $property.Value
+                }
                 $currentPath = if ($path) { "$path.$key" } else { $key }
                 
                 if ($value -is [string] -and $value.StartsWith("__encrypted__:")) {
