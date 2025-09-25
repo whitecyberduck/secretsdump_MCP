@@ -102,7 +102,11 @@ class MCPSecurityTester {
                     $key = $property.Key
                     $value = $property.Value
                 }
-                $currentPath = if ($path) { "$path.$key" } else { $key }
+                if ($path) {
+                    $currentPath = "$path.$key"
+                } else {
+                    $currentPath = $key
+                }
                 
                 if ($value -is [string] -and $value.StartsWith("__encrypted__:")) {
                     [void]$blobs.Add($value)
@@ -123,7 +127,11 @@ class MCPSecurityTester {
         }
         elseif ($obj -is [array]) {
             for ($i = 0; $i -lt $obj.Count; $i++) {
-                $currentPath = if ($path) { "$path[$i]" } else { "[$i]" }
+                if ($path) {
+                    $currentPath = "$path[$i]"
+                } else {
+                    $currentPath = "[$i]"
+                }
                 $this.SearchForBlobs($obj[$i], $blobs, $fileName, $currentPath)
             }
         }
